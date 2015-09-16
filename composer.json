@@ -1,0 +1,21 @@
+{
+    "name": "devlucid/jsonresponse",
+    "description": "A PHP and Javascript library for sending json from a server and updating a webpage with the response",
+    "type": "Library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mike Thorn",
+            "email": "mthorn@devlucid.com"
+        }
+    ],
+    "minimum-stability": "dev",
+        "require": {
+        "php": ">=5.2.0"
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": { "DevLucid\\": "" }
+    }
+
+}
