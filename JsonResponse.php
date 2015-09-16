@@ -17,6 +17,7 @@ class JsonResponse
         if (null !== static::$instance) {
              return static::$instance;
         }
+        ob_start();
         static::$instance = new JsonResponse();
         foreach ($config as $key=>$value)
         {
@@ -28,54 +29,72 @@ class JsonResponse
 
     public function title($title)
     {
-        $this->response['title'] = $title;
+        $this->json['title'] = $title;
     }
 
     public function description($description)
     {
-        $this->response['description'] = $description;
+        $this->json['description'] = $description;
     }
 
     public function keywords($keywords)
     {
-        $this->response['keywords'] = $keywords;
+        $this->json['keywords'] = $keywords;
     }
 
     public function javascript($javascript)
     {
-        $this->response['javascript'] .= $javascript;
+        $this->json['javascript'] .= $javascript;
     }
 
     public function prepend($selector, $content=null)
     {
-        if (!isset($this->response['prepend'][$selector]))
+        if (!isset($this->json['prepend'][$selector]))
         {
-            $this->response['prepend'][$selector] = '';
+            $this->json['prepend'][$selector] = '';
         }
-        $this->response['prepend'][$selector] .= (string) $content;
+        
+        if(is_null($content))
+        {
+            $content = ob_get_clean();
+            ob_start();
+        }
+        $this->json['prepend'][$selector] .= (string) $content;
     }
 
     public function append($selector, $content=null)
     {
-        if (!isset($this->response['append'][$selector]))
+        if (!isset($this->json['append'][$selector]))
         {
-            $this->response['append'][$selector] = '';
+            $this->json['append'][$selector] = '';
         }
-        $this->response['append'][$selector] .= (string) $content;
+
+        if(is_null($content))
+        {
+            $content = ob_get_clean();
+            ob_start();
+        }
+        $this->json['append'][$selector] .= (string) $content;
     }
 
     public function replace($selector, $content=null)
     {
-        if (!isset($this->response['replace'][$selector]))
+        if (!isset($this->json['replace'][$selector]))
         {
-            $this->response['replace'][$selector] = '';
+            $this->json['replace'][$selector] = '';
         }
-        $this->response['replace'][$selector] .= (string) $content;
+
+        if(is_null($content))
+        {
+            $content = ob_get_clean();
+            ob_start();
+        }
+       $this->json['replace'][$selector] .= (string) $content;
     }
 
     public function clear()
     {
-        $this->response = [
+        $this->json = [
             'title'       => null,
             'description' => null,
             'keywords'    => null,
@@ -94,7 +113,7 @@ class JsonResponse
         header("Cache-Control: post-check=0, pre-check=0", false);
         header("Pragma: no-cache"); // HTTP/1.0
         header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); 
-        echo(json_encode(array_filter($this->response)));
+        echo(json_encode(array_filter($this->json)));
         exit();
     }
 }
