@@ -30,6 +30,7 @@ class JsonResponse
     public function title($title)
     {
         $this->json['title'] = $title;
+        $this->replace('#title',$title);
     }
 
     public function description($description)
@@ -54,11 +55,7 @@ class JsonResponse
             $this->json['prepend'][$selector] = '';
         }
         
-        if(is_null($content))
-        {
-            $content = ob_get_clean();
-            ob_start();
-        }
+        $content = self::ob_content($content);
         $this->json['prepend'][$selector] .= (string) $content;
     }
 
@@ -69,11 +66,7 @@ class JsonResponse
             $this->json['append'][$selector] = '';
         }
 
-        if(is_null($content))
-        {
-            $content = ob_get_clean();
-            ob_start();
-        }
+        $content = self::ob_content($content);
         $this->json['append'][$selector] .= (string) $content;
     }
 
@@ -84,12 +77,18 @@ class JsonResponse
             $this->json['replace'][$selector] = '';
         }
 
+        $content = self::ob_content($content);
+        $this->json['replace'][$selector] .= (string) $content;
+    }
+
+    public static function ob_content($content=null)
+    {
         if(is_null($content))
         {
             $content = ob_get_clean();
             ob_start();
         }
-       $this->json['replace'][$selector] .= (string) $content;
+        return $content;
     }
 
     public function clear()
